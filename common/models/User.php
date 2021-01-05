@@ -1,7 +1,9 @@
 <?php
+
 namespace common\models;
 
 use Yii;
+use yii\base\Exception;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -21,6 +23,8 @@ use yii\web\IdentityInterface;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
+ * @property-read string $authKey
+ * @property string $description
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -43,7 +47,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
         ];
     }
 
@@ -68,6 +72,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * {@inheritdoc}
+     * @throws NotSupportedException
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
@@ -109,7 +114,8 @@ class User extends ActiveRecord implements IdentityInterface
      * @param string $token verify email token
      * @return static|null
      */
-    public static function findByVerificationToken($token) {
+    public static function findByVerificationToken($token)
+    {
         return static::findOne([
             'verification_token' => $token,
             'status' => self::STATUS_INACTIVE
@@ -128,7 +134,7 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
 
-        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $timestamp = (int)substr($token, strrpos($token, '_') + 1);
         $expire = Yii::$app->params['user.passwordResetTokenExpire'];
         return $timestamp + $expire >= time();
     }
@@ -172,6 +178,7 @@ class User extends ActiveRecord implements IdentityInterface
      * Generates password hash from password and sets it to the model
      *
      * @param string $password
+     * @throws Exception
      */
     public function setPassword($password)
     {
@@ -180,6 +187,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Generates "remember me" authentication key
+     * @throws Exception
      */
     public function generateAuthKey()
     {
@@ -188,6 +196,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Generates new password reset token
+     * @throws Exception
      */
     public function generatePasswordResetToken()
     {
@@ -196,6 +205,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Generates new token for email verification
+     * @throws Exception
      */
     public function generateEmailVerificationToken()
     {
