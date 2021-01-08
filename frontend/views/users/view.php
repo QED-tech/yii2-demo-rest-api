@@ -13,11 +13,11 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-view">
 
-<!--    --><?php //if (Yii::$app->user->can(Rbac::MANAGE_PROFILE, ['user' => $model])): ?>
+    <?php if (Yii::$app->user->can(Rbac::MANAGE_PROFILE, ['user' => $model])): ?>
         <p class="pull-right">
             <?= Html::a('Profile', ['profile/index'], ['class' => 'btn btn-primary']) ?>
         </p>
-<!--    --><?php //endif; ?>
+    <?php endif; ?>
 
     <h1><?= Html::encode($this->title) ?></h1>
 

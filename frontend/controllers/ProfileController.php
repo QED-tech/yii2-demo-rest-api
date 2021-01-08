@@ -15,7 +15,7 @@ class ProfileController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'rules' => [
                     [
                         'allow' => true,
@@ -24,7 +24,7 @@ class ProfileController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['post'],
                 ],
@@ -66,10 +66,9 @@ class ProfileController extends Controller
     }
 
     /**
-     * @return User the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    private function findModel()
+    private function findModel(): User
     {
         if (($model = User::findOne(Yii::$app->user->id)) !== null) {
             return $model;
