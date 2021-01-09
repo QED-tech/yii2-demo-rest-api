@@ -2,58 +2,41 @@
 
 namespace common\models;
 
-use common\models\query\UserQuery;
-use Yii;
+use common\models\query\PostQuery;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\Url;
+use yii\web\Linkable;
 
 /**
- * This is the model class for table "post".
+ * This is the model class for table "{{%post}}".
  *
- * @property int $id
- * @property int $user_id
- * @property int $created_at
- * @property int $updated_at
- * @property string|null $title
- * @property string|null $content
+ * @property integer $id
+ * @property integer $user_id
+ * @property integer $created_at
+ * @property integer $updated_at
+ * @property string $title
+ * @property string $content
  *
+ * @property-read array $links
  * @property User $user
  */
-class Post extends ActiveRecord
+class Post extends ActiveRecord implements Linkable
 {
-    /**
-     * {@inheritdoc}
-     */
     public static function tableName(): string
     {
-        return 'post';
+        return '{{%post}}';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules(): array
     {
         return [
-            [['user_id', 'created_at', 'updated_at'], 'required'],
-            [['user_id', 'created_at', 'updated_at'], 'integer'],
             [['content'], 'string'],
             [['title'], 'string', 'max' => 255],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
-    public function behaviors(): array
-    {
-        return [
-            TimestampBehavior::class,
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function attributeLabels(): array
     {
         return [
@@ -66,22 +49,35 @@ class Post extends ActiveRecord
         ];
     }
 
-    /**
-     * Gets query for [[User]].
-     *
-     * @return ActiveQuery|UserQuery
-     */
-    public function getUser()
+    public function behaviors(): array
+    {
+        return [
+            TimestampBehavior::class,
+        ];
+    }
+
+
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
-    /**
-     * {@inheritdoc}
-     * @return PostQuery the active query used by this AR class.
-     */
     public static function find(): PostQuery
     {
         return new PostQuery(get_called_class());
+    }
+
+    public function extraFields(): array
+    {
+        return [
+            'author' => 'user',
+        ];
+    }
+
+    public function getLinks(): array
+    {
+        return [
+            'self' => Url::to(['post/view', 'id' => $this->id], true),
+        ];
     }
 }

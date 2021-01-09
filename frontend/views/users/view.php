@@ -1,6 +1,7 @@
 <?php
 
 use common\rbac\Rbac;
+use frontend\widgets\LastUserPosts;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -26,5 +27,15 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= Yii::$app->formatter->asNtext($model->description) ?>
         </div>
     </div>
+
+    <p class="pull-right">
+        <?= Html::a('Create Post', ['user-posts/create', 'user_id' => $model->id], ['class' => 'btn btn-success']) ?>
+    </p>
+
+    <h2>My Recent Posts</h2>
+
+    <?= LastUserPosts::widget([
+        'user' => $model,
+    ]) ?>
 
 </div>
