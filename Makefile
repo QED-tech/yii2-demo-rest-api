@@ -15,3 +15,5 @@ init:
 ide:
 	php yii ide-helper/generate
 
+api-test:
+	docker-compose run --rm backend vendor/bin/codecept run -- -c api

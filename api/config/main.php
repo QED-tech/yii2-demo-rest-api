@@ -39,6 +39,8 @@ return [
                 [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
+                    'logVars' => [],
+                    'except' => ['yii\db\*', 'yii\web\*', 'yii\base\*'],
                 ],
             ],
         ],

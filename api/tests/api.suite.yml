@@ -3,8 +3,8 @@ modules:
   enabled:
     - REST:
         depends: PhpBrowser
-        url: 'http://localhost:22080//index-test.php'
-        part: [json]
+        url: 'https://75159f89fcb3.ngrok.io/index-test.php'
+        part: [ json ]
     - Yii2:
-        part: [orm, fixtures]
+        part: [ orm, fixtures ]
         entryScript: index-test.php
