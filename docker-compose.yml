@@ -12,6 +12,16 @@ services:
       # Mount source-code for development
       - ./:/app
 
+  api:
+    build: api
+    ports:
+      - 22080:80
+    volumes:
+      # Re-use local composer cache via host-volume
+      - ~/.composer-docker/cache:/root/.composer/cache:delegated
+      # Mount source-code for development
+      - ./:/app
+
   backend:
     build: backend
     ports:
@@ -23,13 +33,20 @@ services:
       - ./:/app
 
   mysql:
-    image: mysql:5.7
+    image: mariadb:latest
     environment:
       - MYSQL_ROOT_PASSWORD=verysecret
       - MYSQL_DATABASE=yii2advanced
       - MYSQL_USER=yii2advanced
       - MYSQL_PASSWORD=secret
 
+  mysql-test:
+    image: mariadb:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=verysecret
+      - MYSQL_DATABASE=yii2advanced_test
+      - MYSQL_USER=yii2advanced_test
+      - MYSQL_PASSWORD=secret
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
